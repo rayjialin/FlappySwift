@@ -32,5 +32,9 @@
 	</array>
 	<key>UIStatusBarHidden</key>
 	<true/>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>LHLFlappyBird wants to save an image to the camera roll</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>LHLFlappyBird wants to save an image to the camera roll</string>
 </dict>
 </plist>

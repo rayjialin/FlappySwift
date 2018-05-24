@@ -29,12 +29,17 @@ extension SKNode {
     }
 }
 
-class GameViewController: UIViewController {
-
+class GameViewController: UIViewController, ShowActivityVC {
+    func handleShareButton() {
+        shareScore()
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         if let scene = GameScene.unarchiveFromFile("GameScene") as? GameScene {
+            scene.showActivityVCDelegate = self
+            
             // Configure the view.
             let skView = self.view as! SKView
             skView.showsFPS = true
@@ -47,13 +52,15 @@ class GameViewController: UIViewController {
             scene.scaleMode = .aspectFill
             
             skView.presentScene(scene)
+            
+            
         }
     }
-
+    
     override var shouldAutorotate : Bool {
         return true
     }
-
+    
     override var supportedInterfaceOrientations : UIInterfaceOrientationMask {
         if UIDevice.current.userInterfaceIdiom == .phone {
             return UIInterfaceOrientationMask.allButUpsideDown
@@ -61,10 +68,34 @@ class GameViewController: UIViewController {
             return UIInterfaceOrientationMask.all
         }
     }
-
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Release any cached data, images, etc that aren't in use.
+    }
+    
+    // share score - capture screenshot and share using activity controller
+    func shareScore(){
+        let image = TakeSnapShot()
+        
+        guard let jpegData = UIImageJPEGRepresentation(image, 1.0) else {return}
+        let activityVC = UIActivityViewController(activityItems: [jpegData], applicationActivities: [])
+        present(activityVC, animated: true, completion: nil)
+    }
+    
+    func TakeSnapShot() -> UIImage{
+        // take a snapshot of the quote with background image
+        var image = UIImage()
+        
+        guard let view = view else {return image}
+        UIGraphicsBeginImageContextWithOptions(view.bounds.size, true, 0)
+        view.drawHierarchy(in: view.bounds, afterScreenUpdates: true)
+        guard let CGimage = UIGraphicsGetCurrentContext()?.makeImage() else {return image}
+        UIGraphicsEndImageContext()
+        
+        image = UIImage(cgImage: CGimage)
+        return image
+        
     }
     
 }
